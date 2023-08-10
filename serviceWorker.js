@@ -1,23 +1,16 @@
 const cacheName = "local";
 
-const cacheAssets = [
-    'index.html',
-    'aboutUs.html',
-    '/assets/style.css',
-    '/assets/main.js',
-]
-
 self.addEventListener('install', (e) => {
     console.log("Service worker installed!")
-    e.waitUntil(
-        caches
-        .open(cacheName)
-        .then(cache => {
-            console.log("Service worker caching files!")
-            cache.addAll(cacheAssets)
-        })
-        .then(() => self.skipWaiting())
-    )
+        // e.waitUntil(
+        //     caches
+        //     .open(cacheName)
+        //     .then(cache => {
+        //         console.log("Service worker caching files!")
+        //         cache.addAll(cacheAssets)
+        //     })
+        //     .then(() => self.skipWaiting())
+        // )
 })
 
 self.addEventListener('activate', (e) => {
@@ -32,7 +25,7 @@ self.addEventListener('fetch', event => {
     if (requestUrl.origin === self.location.origin) {
         event.respondWith(
             caches.match(event.request).then(response => {
-                return response || fetch(event.request).then(fetchResponse => {
+                return fetch(event.request).then(fetchResponse => {
                     return caches.open(cacheName).then(cache => {
                         cache.put(event.request, fetchResponse.clone());
                         return fetchResponse;
