@@ -1,0 +1,13 @@
+.navbar {
+    background-color: antiquewhite;
+    padding: 10px;
+}
+
+.menu_container > a {
+    padding: 10px;
+}
+
+body {
+    padding: 10px;
+    margin: 0;
+}
