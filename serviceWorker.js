@@ -25,27 +25,25 @@ self.addEventListener('activate', (e) => {
         // Can be used to clear old cache
 })
 
-self.addEventListener('fetch', (e) => {
-    e.respondWith(
-        fetch(e.request).catch(() => caches.match(e.request))
-    )
-})
-
 
 // 1. Network-First Strategy:
 self.addEventListener('fetch', event => {
-    event.respondWith(
-        caches.match(event.request).then(response => {
-            return response || fetch(event.request).then(fetchResponse => {
-                return caches.open(cacheName).then(cache => {
-                    cache.put(event.request, fetchResponse.clone());
-                    return fetchResponse;
+    const requestUrl = new URL(event.request.url);
+    if (requestUrl.origin === self.location.origin) {
+        event.respondWith(
+            caches.match(event.request).then(response => {
+                return response || fetch(event.request).then(fetchResponse => {
+                    return caches.open(cacheName).then(cache => {
+                        cache.put(event.request, fetchResponse.clone());
+                        return fetchResponse;
+                    });
                 });
-            });
-        })
-    );
+            })
+        );
+    }
 });
 
+/**
 // 2. Stale-While-Revalidate:
 self.addEventListener('fetch', event => {
     event.respondWith(
@@ -92,3 +90,4 @@ self.addEventListener('fetch', event => {
         })
     );
 });
+*/
