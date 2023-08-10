@@ -37,7 +37,7 @@ self.addEventListener('fetch', event => {
     event.respondWith(
         caches.match(event.request).then(response => {
             return response || fetch(event.request).then(fetchResponse => {
-                return caches.open('my-cache').then(cache => {
+                return caches.open(cacheName).then(cache => {
                     cache.put(event.request, fetchResponse.clone());
                     return fetchResponse;
                 });
@@ -49,7 +49,7 @@ self.addEventListener('fetch', event => {
 // 2. Stale-While-Revalidate:
 self.addEventListener('fetch', event => {
     event.respondWith(
-        caches.open('my-cache').then(cache => {
+        caches.open(cacheName).then(cache => {
             return cache.match(event.request).then(cachedResponse => {
                 const fetchPromise = fetch(event.request).then(fetchResponse => {
                     cache.put(event.request, fetchResponse.clone());
@@ -82,7 +82,7 @@ self.addEventListener('fetch', event => {
     event.respondWith(
         caches.match(event.request).then(cachedResponse => {
             const fetchPromise = fetch(event.request).then(fetchResponse => {
-                caches.open('my-cache').then(cache => {
+                caches.open(cacheName).then(cache => {
                     cache.put(event.request, fetchResponse.clone());
                 });
                 return fetchResponse;
